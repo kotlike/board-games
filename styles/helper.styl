@@ -1,0 +1,40 @@
+
+fontFace(name, file = name, svgId = name, weight = normal, style = normal)
+    fontBasePath ?= ''
+    @font-face
+      font-family name
+      src url(fontBasePath + file + '.eot')
+      src url(fontBasePath + file + '.eot?#iefix') format('embedded-opentype'),
+          url(fontBasePath + file + '.woff') format('woff'),
+          url(fontBasePath + file + '.ttf') format('truetype'),
+          url(fontBasePath + file + '.svg#' + svgId) format('svg');
+      font-weight weight
+      font-style style
+
+clearfix()
+  *zoom:1 // IE fix
+
+  &:before, // need before to prevent margin collapse
+  &:after
+    content:" " /* this space is needed for Opera only */
+    line-height:0
+    display:table
+
+  &:after
+    clear:both
+
+/*    Extendables - pretty common blocks (placeholder selectors) that could be derived from using @expand(s)
+**********************************************************************************************/
+$clearfix
+  clearfix()
+
+$v-aligned
+  &,&:after
+    display inline-block
+    white-space nowrap
+  &:after
+    content ''
+
+
+$v-target
+  display inline-block

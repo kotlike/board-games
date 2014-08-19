@@ -1,0 +1,523 @@
+/*! opower-board-games - v1.0.0 - 2014-08-19
+* Copyright (c) 2014 Kostiantyn Khusnutdinov; Licensed ISC 
+*/
+.game .row {
+  *zoom: 1;
+}
+.game .row:before,
+.game .row:after {
+  content: " ";
+  line-height: 0;
+  display: table;
+}
+.game .row:after {
+  clear: both;
+}
+/* Custom font destined for pieces */
+@font-face {
+  font-family: 'chess-utrecht';
+  src: url("../font/chess-utrecht.eot");
+  src: url("../font/chess-utrecht.eot?#iefix") format('embedded-opentype'), url("../font/chess-utrecht.woff") format('woff'), url("../font/chess-utrecht.ttf") format('truetype'), url("../font/chess-utrecht.svg#chess-utrecht") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Some other custom fonts definitions */
+@font-face {
+  font-family: 'flowery';
+  src: url("../font/flowery.eot");
+  src: url("../font/flowery.eot?#iefix") format('embedded-opentype'), url("../font/flowery.woff") format('woff'), url("../font/flowery.ttf") format('truetype'), url("../font/flowery.svg#flowery") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'nilland-smallcaps';
+  src: url("../font/nilland-smallcaps.eot");
+  src: url("../font/nilland-smallcaps.eot?#iefix") format('embedded-opentype'), url("../font/nilland-smallcaps.woff") format('woff'), url("../font/nilland-smallcaps.ttf") format('truetype'), url("../font/nilland-smallcaps.svg#nilland-smallcaps") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Basic reset-normalization */
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: nilland-smallcaps, sans-serif;
+}
+.game .caption,
+.game .board,
+.piece {
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  transition: all 0.3s ease-out;
+}
+.dashboard,
+.game .stats.no-bucket .box {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -o-box-orient: horizontal;
+  -webkit-flex-flow: row;
+  -ms-flex-flow: row;
+  flex-flow: row;
+}
+.game .prompt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+}
+/* Some general helper classes */
+.unstyled {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+/* Dashboard layout */
+.dashboard {
+  -webkit-box-pack: distribute;
+  -moz-box-pack: distribute;
+  -o-box-pack: distribute;
+  -ms-flex-pack: distribute;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+/* Game common layout and styling */
+.game {
+  min-width: 21em;
+  padding: 2.5em;
+  margin: 2.5em auto;
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -o-box-orient: vertical;
+  -webkit-box-lines: multiple;
+  -moz-box-lines: multiple;
+  -o-box-lines: multiple;
+  -webkit-flex-flow: column wrap;
+  -ms-flex-flow: column wrap;
+  flex-flow: column wrap;
+  -ms-flex-line-pack: center;
+  -webkit-align-content: center;
+  align-content: center;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  text-align: center;
+}
+.game:not(.over):hover .board,
+.game:not(.over).active .board {
+  -webkit-transform: rotateX(50deg) translateZ(0);
+  -moz-transform: rotateX(50deg) translateZ(0);
+  -o-transform: rotateX(50deg) translateZ(0);
+  -ms-transform: rotateX(50deg) translateZ(0);
+  transform: rotateX(50deg) translateZ(0);
+  -webkit-box-shadow: 10px 10px 8px #555;
+  box-shadow: 10px 10px 8px #555;
+}
+.game:not(.over):hover .board .piece,
+.game:not(.over).active .board .piece {
+  -webkit-transition-delay: 0.3s;
+  -moz-transition-delay: 0.3s;
+  -o-transition-delay: 0.3s;
+  -ms-transition-delay: 0.3s;
+  transition-delay: 0.3s;
+  -webkit-backface-visibility: none;
+  -moz-backface-visibility: none;
+  -ms-backface-visibility: none;
+  backface-visibility: none;
+  -webkit-transform-origin: 50% 90%;
+  -moz-transform-origin: 50% 90%;
+  -o-transform-origin: 50% 90%;
+  -ms-transform-origin: 50% 90%;
+  transform-origin: 50% 90%;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform: rotateX(-10deg) scaleX(1.8) scaleY(2.2) translateZ(0);
+  -moz-transform: rotateX(-10deg) scaleX(1.8) scaleY(2.2) translateZ(0);
+  -o-transform: rotateX(-10deg) scaleX(1.8) scaleY(2.2) translateZ(0);
+  -ms-transform: rotateX(-10deg) scaleX(1.8) scaleY(2.2) translateZ(0);
+  transform: rotateX(-10deg) scaleX(1.8) scaleY(2.2) translateZ(0);
+  text-shadow: 1px -1px 2px #333;
+}
+.game:not(.over):hover .board .piece.piece-checker,
+.game:not(.over).active .board .piece.piece-checker {
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: rotateX(-5deg) scaleX(1.3) scaleY(1.3) translateZ(0);
+  -moz-transform: rotateX(-5deg) scaleX(1.3) scaleY(1.3) translateZ(0);
+  -o-transform: rotateX(-5deg) scaleX(1.3) scaleY(1.3) translateZ(0);
+  -ms-transform: rotateX(-5deg) scaleX(1.3) scaleY(1.3) translateZ(0);
+  transform: rotateX(-5deg) scaleX(1.3) scaleY(1.3) translateZ(0);
+}
+.game:nth-child(even) {
+  border: 1px solid #222;
+  background: #ccc;
+}
+.game.over .lost,
+.game.over .won {
+  display: inline-block;
+  background: #f5f5f5;
+  padding: 0 0.5em;
+}
+.game.over.lost .won,
+.game.over.won .lost,
+.game.over > .prompt {
+  display: none;
+}
+.game .prompt {
+  z-index: 1;
+  overflow: hidden;
+  bottom: auto;
+}
+.over.game .prompt {
+  bottom: 0;
+  height: 2em;
+  line-height: 2;
+  width: auto;
+}
+.game .stats {
+  width: 16em;
+  padding: 1em 0;
+  -webkit-box-ordinal-group: 2;
+  -moz-box-ordinal-group: 2;
+  -o-box-ordinal-group: 2;
+  -ms-flex-order: 2;
+  -webkit-order: 2;
+  order: 2;
+}
+.game .stats.no-bucket .box {
+  width: 100%;
+  border: 0;
+  -webkit-box-lines: single;
+  -moz-box-lines: single;
+  -o-box-lines: single;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: justify;
+  -moz-box-pack: justify;
+  -o-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+.game .stats.no-bucket .score {
+  width: auto;
+  margin: 0;
+  font-size: 2em;
+  padding: 0.5em;
+  border: 1px solid #222;
+}
+.game .stats .title {
+  margin: 0 0 0.25em;
+}
+.game .stats .box {
+  border: 1px solid #222;
+}
+.game .stats .score {
+  width: 100%;
+  margin: 0 0.25em;
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
+  -webkit-box-pack: start;
+  -moz-box-pack: start;
+  -o-box-pack: start;
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  -ms-flex-line-pack: center;
+  -webkit-align-content: center;
+  align-content: center;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  text-align: left;
+}
+.game .stats .score .piece {
+  margin: 0 0 0 0.25em;
+}
+.game .board-container {
+  -webkit-perspective: 800px;
+  -moz-perspective: 800px;
+  -ms-perspective: 800px;
+  perspective: 800px;
+  position: relative;
+}
+.game .caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
+  text-align: left;
+  -webkit-transform-origin: 0% 100%;
+  -moz-transform-origin: 0% 100%;
+  -o-transform-origin: 0% 100%;
+  -ms-transform-origin: 0% 100%;
+  transform-origin: 0% 100%;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  -webkit-transition-delay: 0.2s;
+  -moz-transition-delay: 0.2s;
+  -o-transition-delay: 0.2s;
+  -ms-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+  white-space: nowrap;
+  font: 1.85em/1.25 flowery, Arial, Tahoma, Geneva, sans-serif;
+}
+.game .board {
+  width: 16em;
+  height: 16em;
+  border: 1px solid #333;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  display: inline-block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -o-box-orient: vertical;
+  -webkit-flex-flow: column;
+  -ms-flex-flow: column;
+  flex-flow: column;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.game .row {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.game .row:nth-child(even) .cell:nth-child(even),
+.game .row:nth-child(odd) .cell:nth-child(odd) {
+  background: #fff;
+}
+.game .cell {
+  width: 2em;
+  height: 2em;
+  float: left;
+  background: #000;
+  -webkit-perspective: 4em;
+  -moz-perspective: 4em;
+  -ms-perspective: 4em;
+  perspective: 4em;
+  cursor: pointer;
+}
+.piece {
+  display: inline-block;
+  speak: none;
+  font-family: 'chess-utrecht', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 2;
+/* For better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* Styles specific for each game */
+.piece-king:before {
+  content: '\265A';
+}
+.piece-queen:before {
+  content: '\265B';
+}
+.piece-rook:before {
+  content: '\265C';
+}
+.piece-bishop:before {
+  content: '\265D';
+}
+.piece-knight:before {
+  content: '\265E';
+}
+.piece-pawn:before {
+  content: '\265F';
+}
+.piece-checker:before {
+  content: '\25CF';
+}
+.checkers.game .cell {
+  background: #000;
+}
+.checkers.game .row:nth-child(even) .cell:nth-child(even),
+.checkers.game .row:nth-child(odd) .cell:nth-child(odd) {
+  background: #fff;
+}
+.checkers.game .piece,
+.checkers.game .stats .score,
+.checkers.game .stats .opponent .piece {
+  color: #ff6347;
+}
+.checkers.game .stats.no-bucket .opponent.score {
+  background: #ff6347;
+}
+.checkers.game .stats .piece,
+.checkers.game .stats .opponent.score,
+.checkers.game .opponent.piece,
+.checkers.game .opponent .piece {
+  color: #87cefa;
+}
+.checkers.game .stats.no-bucket .score {
+  background: #87cefa;
+}
+.chess.game .cell {
+  background: #bdb76b;
+}
+.chess.game .row:nth-child(even) .cell:nth-child(even),
+.chess.game .row:nth-child(odd) .cell:nth-child(odd) {
+  background: #fff;
+}
+.chess.game .piece,
+.chess.game .stats .score,
+.chess.game .stats .opponent .piece {
+  color: #222;
+}
+.chess.game .stats.no-bucket .opponent.score {
+  background: #222;
+}
+.chess.game .stats .piece,
+.chess.game .stats .opponent.score,
+.chess.game .opponent.piece,
+.chess.game .opponent .piece {
+  color: #ffd700;
+}
+.chess.game .stats.no-bucket .score {
+  background: #ffd700;
+}
+.othello.game .cell {
+  background: #8fbc8f;
+}
+.othello.game .row:nth-child(even) .cell:nth-child(even),
+.othello.game .row:nth-child(odd) .cell:nth-child(odd) {
+  background: #fff;
+}
+.othello.game .piece,
+.othello.game .stats .score,
+.othello.game .stats .opponent .piece {
+  color: #a9a9a9;
+}
+.othello.game .stats.no-bucket .opponent.score {
+  background: #a9a9a9;
+}
+.othello.game .stats .piece,
+.othello.game .stats .opponent.score,
+.othello.game .opponent.piece,
+.othello.game .opponent .piece {
+  color: #9acd32;
+}
+.othello.game .stats.no-bucket .score {
+  background: #9acd32;
+}
+/* Media Queries */
+@media screen and (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
+  .dashboard {
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -o-box-orient: vertical;
+    -webkit-box-lines: single;
+    -moz-box-lines: single;
+    -o-box-lines: single;
+    -webkit-flex-flow: column nowrap;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap;
+    -ms-flex-line-pack: center;
+    -webkit-align-content: center;
+    align-content: center;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -o-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+  }
+  .game {
+    border: 1px solid #222;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+  }
+  .game .stats {
+    -webkit-box-ordinal-group: 0;
+    -moz-box-ordinal-group: 0;
+    -o-box-ordinal-group: 0;
+    -ms-flex-order: 0;
+    -webkit-order: 0;
+    order: 0;
+  }
+  .game .caption {
+    right: auto;
+    bottom: auto;
+    left: 0;
+    top: 100%;
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+    transform: rotate(0);
+  }
+}

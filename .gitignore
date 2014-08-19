@@ -1,0 +1,2 @@
+#We do not need node_modules directory in repository
+node_modules/
